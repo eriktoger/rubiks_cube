@@ -1,51 +1,8 @@
 import { ReactNode, forwardRef, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Mesh } from "three";
-
-const rotationScale = 0.3333;
-
-const RIGHT = 0;
-const LEFT = 1;
-const UP = 2;
-const DOWN = 3;
-const FRONT = 4;
-const BACK = 5;
-
-const colorNumbers = [RIGHT, LEFT, UP, DOWN, FRONT, BACK] as const;
-
-const initialCubeColors = [
-  { [BACK]: "yellow", [LEFT]: "blue", [DOWN]: "orange" },
-  { [BACK]: "yellow", [DOWN]: "orange" },
-  { [BACK]: "yellow", [RIGHT]: "green", [DOWN]: "orange" },
-  { [BACK]: "yellow", [LEFT]: "blue" },
-  { [BACK]: "yellow" },
-  { [BACK]: "yellow", [RIGHT]: "green" },
-  { [BACK]: "yellow", [LEFT]: "blue", [UP]: "red" },
-  { [BACK]: "yellow", [UP]: "red" },
-  { [BACK]: "yellow", [RIGHT]: "green", [UP]: "red" },
-
-  { [LEFT]: "blue", [DOWN]: "orange" },
-  { [DOWN]: "orange" },
-  { [DOWN]: "orange", [RIGHT]: "green" },
-  { [LEFT]: "blue" },
-  {} /*CenterCube*/,
-  { [RIGHT]: "green" },
-  { [LEFT]: "blue", [UP]: "red" },
-  { [UP]: "red" },
-  { [RIGHT]: "green", [UP]: "red" },
-
-  { [LEFT]: "blue", [DOWN]: "orange", [FRONT]: "white" },
-  { [DOWN]: "orange", [FRONT]: "white" },
-  { [RIGHT]: "green", [DOWN]: "orange", [FRONT]: "white" },
-  { [LEFT]: "blue", [FRONT]: "white" },
-  { [FRONT]: "white" },
-  { [FRONT]: "white", [RIGHT]: "green" },
-  { [LEFT]: "blue", [UP]: "red", [FRONT]: "white" },
-  { [UP]: "red", [FRONT]: "white" },
-  { [RIGHT]: "green", [UP]: "red", [FRONT]: "white" },
-];
-
-const rotateUpIndices = [0, 3, 6, 15, 24, 21, 18, 9];
+import { colorNumbers, initialCubeColors, rotationScale } from "./constants";
+import { calcRotationDown, calcRotationUp } from "./rotations";
 
 const CenterCube = forwardRef<Mesh, { children: ReactNode }>(
   ({ children }, meshRef) => {
@@ -111,74 +68,12 @@ export function Cube() {
 
   const rotateDown = () => {
     const offset = selectedCube % 3;
-    setCubeColors((prev) => {
-      const newCubeColors = JSON.parse(JSON.stringify(prev));
-      for (let i = 0; i < rotateUpIndices.length; i++) {
-        const index = rotateUpIndices[i] + offset;
-        const oldValue = JSON.parse(JSON.stringify(prev[index]));
-        const rotatedOldValue: any = {};
-        for (const [key, value] of Object.entries(oldValue)) {
-          if (key === UP.toString()) {
-            rotatedOldValue[FRONT] = value;
-          } else if (key === BACK.toString()) {
-            rotatedOldValue[UP] = value;
-          } else if (key === DOWN.toString()) {
-            rotatedOldValue[BACK] = value;
-          } else if (key === FRONT.toString()) {
-            rotatedOldValue[DOWN] = value;
-          } else if (key === RIGHT.toString() || key === LEFT.toString()) {
-            rotatedOldValue[key] = value;
-          }
-        }
-
-        if (i + 2 === rotateUpIndices.length) {
-          newCubeColors[rotateUpIndices[0] + offset] = rotatedOldValue;
-        } else if (i + 2 >= rotateUpIndices.length) {
-          newCubeColors[rotateUpIndices[1] + offset] = rotatedOldValue;
-        } else {
-          newCubeColors[rotateUpIndices[i + 2] + offset] = rotatedOldValue;
-        }
-      }
-
-      return newCubeColors;
-    });
+    setCubeColors((prev) => calcRotationDown(offset, prev));
   };
 
   const rotateUp = () => {
     const offset = selectedCube % 3;
-    setCubeColors((prev) => {
-      const newCubeColors = JSON.parse(JSON.stringify(prev));
-      for (let i = rotateUpIndices.length - 1; i >= 0; i--) {
-        const index = rotateUpIndices[i] + offset;
-        const oldValue = JSON.parse(JSON.stringify(prev[index]));
-        const rotatedOldValue: any = {};
-        for (const [key, value] of Object.entries(oldValue)) {
-          if (key === FRONT.toString()) {
-            rotatedOldValue[UP] = value;
-          } else if (key === UP.toString()) {
-            rotatedOldValue[BACK] = value;
-          } else if (key === BACK.toString()) {
-            rotatedOldValue[DOWN] = value;
-          } else if (key === DOWN.toString()) {
-            rotatedOldValue[FRONT] = value;
-          } else if (key === RIGHT.toString() || key === LEFT.toString()) {
-            rotatedOldValue[key] = value;
-          }
-        }
-
-        if (i === 1) {
-          newCubeColors[rotateUpIndices[rotateUpIndices.length - 1] + offset] =
-            rotatedOldValue;
-        } else if (i === 0) {
-          newCubeColors[rotateUpIndices[rotateUpIndices.length - 2] + offset] =
-            rotatedOldValue;
-        } else {
-          newCubeColors[rotateUpIndices[i - 2] + offset] = rotatedOldValue;
-        }
-      }
-
-      return newCubeColors;
-    });
+    setCubeColors((prev) => calcRotationUp(offset, prev));
   };
 
   return (
