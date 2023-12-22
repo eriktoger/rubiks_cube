@@ -8,10 +8,10 @@ import {
   rotationScale,
 } from "./constants";
 import {
-  calcRotationDown,
-  calcRotationLeft,
-  calcRotationRight,
-  calcRotationUp,
+  calcRotationMinusX,
+  calcRotationMinusY,
+  calcRotationPlusX,
+  calcRotationPlusY,
 } from "./rotations";
 
 const CenterCube = forwardRef<Mesh, { children: ReactNode }>(
@@ -31,13 +31,12 @@ export function Cube() {
   const [cubeColors, setCubeColors] = useState(initialCubeColors);
   const [selectedCube, setSelectedCube] = useState(-1);
 
-  const rotateCube = (deltaX: number, deltaY: number) => {
+  const rotateCube = (delta: number, axis: "x" | "y" | "z") => {
     if (!meshRef?.current) {
       return;
     }
 
-    meshRef.current.rotation.x += deltaX * rotationScale;
-    meshRef.current.rotation.y += deltaY * rotationScale;
+    meshRef.current.rotation[axis] += delta * rotationScale;
   };
 
   const OuterCube = ({
@@ -76,39 +75,41 @@ export function Cube() {
   };
   const cubes = Array.from(Array(27).keys());
 
-  const rotateDown = () => {
+  const rotateMinusX = () => {
     const offset = selectedCube % 3;
-    setCubeColors((prev) => calcRotationDown(offset, prev));
+    setCubeColors((prev) => calcRotationMinusX(offset, prev));
   };
 
-  const rotateUp = () => {
+  const rotatePlusX = () => {
     const offset = selectedCube % 3;
-    setCubeColors((prev) => calcRotationUp(offset, prev));
+    setCubeColors((prev) => calcRotationPlusX(offset, prev));
   };
 
-  const rotateRight = () => {
+  const rotatePlusY = () => {
     const rotationIndicies =
       rotateHorisontalIndices.find((indicies) =>
         indicies.find((index) => index === selectedCube)
       ) ?? [];
-    setCubeColors((prev) => calcRotationRight(rotationIndicies, prev));
+    setCubeColors((prev) => calcRotationPlusY(rotationIndicies, prev));
   };
 
-  const rotateLeft = () => {
+  const rotateMinusY = () => {
     const rotationIndicies =
       rotateHorisontalIndices.find((indicies) =>
         indicies.find((index) => index === selectedCube)
       ) ?? [];
-    setCubeColors((prev) => calcRotationLeft(rotationIndicies, prev));
+    setCubeColors((prev) => calcRotationMinusY(rotationIndicies, prev));
   };
 
   return (
     <div>
       <div style={{ marginBottom: 40 }}>
-        <button onClick={() => rotateCube(-1, 0)}>Up </button>
-        <button onClick={() => rotateCube(1, 0)}>Down</button>
-        <button onClick={() => rotateCube(0, -1)}>Left</button>
-        <button onClick={() => rotateCube(0, 1)}>Right</button>
+        <button onClick={() => rotateCube(-1, "x")}>- X </button>
+        <button onClick={() => rotateCube(1, "x")}>+ X</button>
+        <button onClick={() => rotateCube(-1, "y")}>- Y</button>
+        <button onClick={() => rotateCube(1, "y")}>+ Y</button>
+        <button onClick={() => rotateCube(-1, "z")}>- Z</button>
+        <button onClick={() => rotateCube(1, "z")}>+ Z</button>
       </div>
       <div
         style={{
@@ -135,13 +136,13 @@ export function Cube() {
           </CenterCube>
         </Canvas>
 
-        <div style={{ display: "flex", flexDirection: "column", width: 150 }}>
+        <div style={{ display: "flex", flexDirection: "column", width: 200 }}>
           {selectedCube !== -1 && (
             <>
-              <button onClick={rotateUp}>Rotate up</button>
-              <button onClick={rotateDown}>Rotate down</button>
-              <button onClick={rotateLeft}>Rotate Left</button>
-              <button onClick={rotateRight}>Rotate Right</button>
+              <button onClick={rotateMinusX}>Rotate - X</button>
+              <button onClick={rotatePlusX}>Rotate + X</button>
+              <button onClick={rotateMinusY}>Rotate - Y</button>
+              <button onClick={rotatePlusY}>Rotate + Y</button>
               <span>{selectedCube}</span>
             </>
           )}

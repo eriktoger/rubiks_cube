@@ -8,7 +8,9 @@ import {
   rotateVerticalIndices,
 } from "./constants";
 
-export const calcRotationUp = (offset: number, prev: any) => {
+//TODO: Add the third rotation. Add it also to the center cube.
+
+export const calcRotationPlusX = (offset: number, prev: any) => {
   const newCubeColors = JSON.parse(JSON.stringify(prev));
   for (let i = rotateVerticalIndices.length - 1; i >= 0; i--) {
     const index = rotateVerticalIndices[i] + offset;
@@ -43,7 +45,7 @@ export const calcRotationUp = (offset: number, prev: any) => {
   return newCubeColors;
 };
 
-export const calcRotationDown = (offset: number, prev: any) => {
+export const calcRotationMinusX = (offset: number, prev: any) => {
   const newCubeColors = JSON.parse(JSON.stringify(prev));
   for (let i = 0; i < rotateVerticalIndices.length; i++) {
     const index = rotateVerticalIndices[i] + offset;
@@ -75,7 +77,7 @@ export const calcRotationDown = (offset: number, prev: any) => {
   return newCubeColors;
 };
 
-export const calcRotationRight = (indices: number[], prev: any) => {
+export const calcRotationPlusY = (indices: number[], prev: any) => {
   const newCubeColors = JSON.parse(JSON.stringify(prev));
   for (let i = 0; i < indices.length; i++) {
     const index = indices[i];
@@ -107,7 +109,7 @@ export const calcRotationRight = (indices: number[], prev: any) => {
   return newCubeColors;
 };
 
-export const calcRotationLeft = (indices: number[], prev: any) => {
+export const calcRotationMinusY = (indices: number[], prev: any) => {
   const newCubeColors = JSON.parse(JSON.stringify(prev));
   for (let i = indices.length - 1; i >= 0; i--) {
     const index = indices[i];
