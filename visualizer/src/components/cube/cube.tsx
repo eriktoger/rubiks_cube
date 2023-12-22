@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useState } from "react";
+import { ReactNode, forwardRef, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Mesh } from "three";
 
@@ -45,12 +45,24 @@ const initialCubeColors = [
   { [RIGHT]: "green", [UP]: "red", [FRONT]: "WHITE" },
 ];
 
+const CenterCube = forwardRef<Mesh, { children: ReactNode }>(
+  ({ children }, meshRef) => {
+    return (
+      <mesh position={[0, 0, 0]} ref={meshRef}>
+        <boxGeometry args={[0.5, 0.5, 0.5]} />
+        <meshBasicMaterial color={"gray"} />
+        {children}
+      </mesh>
+    );
+  }
+);
+
 export function Cube() {
   // This reference will give us direct access to the mesh
   const meshRef = useRef<Mesh>(null);
   const [cubeColors, setCubeColors] = useState(initialCubeColors);
-  // Set up state for the hovered and active state
-  console.log({ ref: meshRef?.current });
+  const [selectedCube, setSelectedCube] = useState(-1);
+
   // Subscribe this component to the render-loop, rotate the mesh every frame
   const rotateCube = (deltaX: number, deltaY: number) => {
     if (!meshRef?.current) {
@@ -61,16 +73,6 @@ export function Cube() {
     meshRef.current.rotation.y += deltaY * rotationScale;
   };
 
-  const CenterCube = ({ children }: { children: ReactNode }) => {
-    return (
-      <mesh position={[0, 0, 0]} ref={meshRef}>
-        <boxGeometry args={[0.5, 0.5, 0.5]} />
-        <meshBasicMaterial color={"gray"} />
-        {children}
-      </mesh>
-    );
-  };
-
   const OuterCube = ({ cubeIndex }: { cubeIndex: number }) => {
     const x = (cubeIndex % 3) - 1;
     const y = Math.floor((cubeIndex % 9) / 3) - 1;
@@ -78,7 +80,13 @@ export function Cube() {
     const colors = cubeColors[cubeIndex];
 
     return (
-      <mesh position={[x * 0.5, y * 0.5, z * 0.5]}>
+      <mesh
+        position={[x * 0.5, y * 0.5, z * 0.5]}
+        onClick={(event) => {
+          event.stopPropagation();
+          setSelectedCube(cubeIndex);
+        }}
+      >
         <boxGeometry args={[0.49, 0.49, 0.49]} />
 
         {colorNumbers.map((number) => (
@@ -86,6 +94,8 @@ export function Cube() {
             key={number}
             attach={`material-${number}`}
             color={colors[number] ?? "gray"}
+            transparent
+            opacity={selectedCube === cubeIndex ? 0.5 : 1}
           />
         ))}
       </mesh>
@@ -112,12 +122,13 @@ export function Cube() {
         <Canvas>
           <ambientLight />
 
-          <CenterCube>
+          <CenterCube ref={meshRef}>
             {cubes.map((cubeIndex) => {
               return <OuterCube key={cubeIndex} cubeIndex={cubeIndex} />;
             })}
           </CenterCube>
         </Canvas>
+        <span style={{ width: 40 }}>{selectedCube}</span>
       </div>
     </div>
   );
