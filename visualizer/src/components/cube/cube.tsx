@@ -2,7 +2,7 @@ import { ReactNode, forwardRef, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Mesh } from "three";
 
-const rotationScale = 0.5;
+const rotationScale = 0.3333;
 
 const RIGHT = 0;
 const LEFT = 1;
@@ -34,16 +34,18 @@ const initialCubeColors = [
   { [UP]: "red" },
   { [RIGHT]: "green", [UP]: "red" },
 
-  { [LEFT]: "blue", [DOWN]: "orange", [FRONT]: "WHITE" },
-  { [DOWN]: "orange", [FRONT]: "WHITE" },
-  { [RIGHT]: "green", [DOWN]: "orange", [FRONT]: "WHITE" },
-  { [LEFT]: "blue", [FRONT]: "WHITE" },
-  { [FRONT]: "WHITE" },
-  { [FRONT]: "WHITE", [RIGHT]: "green" },
-  { [LEFT]: "blue", [UP]: "red", [FRONT]: "WHITE" },
-  { [UP]: "red", [FRONT]: "WHITE" },
-  { [RIGHT]: "green", [UP]: "red", [FRONT]: "WHITE" },
+  { [LEFT]: "blue", [DOWN]: "orange", [FRONT]: "white" },
+  { [DOWN]: "orange", [FRONT]: "white" },
+  { [RIGHT]: "green", [DOWN]: "orange", [FRONT]: "white" },
+  { [LEFT]: "blue", [FRONT]: "white" },
+  { [FRONT]: "white" },
+  { [FRONT]: "white", [RIGHT]: "green" },
+  { [LEFT]: "blue", [UP]: "red", [FRONT]: "white" },
+  { [UP]: "red", [FRONT]: "white" },
+  { [RIGHT]: "green", [UP]: "red", [FRONT]: "white" },
 ];
+
+const rotateUpIndices = [0, 3, 6, 15, 24, 21, 18, 9];
 
 const CenterCube = forwardRef<Mesh, { children: ReactNode }>(
   ({ children }, meshRef) => {
@@ -58,12 +60,10 @@ const CenterCube = forwardRef<Mesh, { children: ReactNode }>(
 );
 
 export function Cube() {
-  // This reference will give us direct access to the mesh
   const meshRef = useRef<Mesh>(null);
   const [cubeColors, setCubeColors] = useState(initialCubeColors);
   const [selectedCube, setSelectedCube] = useState(-1);
 
-  // Subscribe this component to the render-loop, rotate the mesh every frame
   const rotateCube = (deltaX: number, deltaY: number) => {
     if (!meshRef?.current) {
       return;
@@ -73,7 +73,13 @@ export function Cube() {
     meshRef.current.rotation.y += deltaY * rotationScale;
   };
 
-  const OuterCube = ({ cubeIndex }: { cubeIndex: number }) => {
+  const OuterCube = ({
+    cubeIndex,
+    cubeColors,
+  }: {
+    cubeIndex: number;
+    cubeColors: any;
+  }) => {
     const x = (cubeIndex % 3) - 1;
     const y = Math.floor((cubeIndex % 9) / 3) - 1;
     const z = Math.floor(cubeIndex / 9) - 1;
@@ -84,7 +90,7 @@ export function Cube() {
         position={[x * 0.5, y * 0.5, z * 0.5]}
         onClick={(event) => {
           event.stopPropagation();
-          setSelectedCube(cubeIndex);
+          setSelectedCube((prev) => (prev === cubeIndex ? -1 : cubeIndex));
         }}
       >
         <boxGeometry args={[0.49, 0.49, 0.49]} />
@@ -102,6 +108,79 @@ export function Cube() {
     );
   };
   const cubes = Array.from(Array(27).keys());
+
+  const rotateDown = () => {
+    const offset = selectedCube % 3;
+    setCubeColors((prev) => {
+      const newCubeColors = JSON.parse(JSON.stringify(prev));
+      for (let i = 0; i < rotateUpIndices.length; i++) {
+        const index = rotateUpIndices[i] + offset;
+        const oldValue = JSON.parse(JSON.stringify(prev[index]));
+        const rotatedOldValue: any = {};
+        for (const [key, value] of Object.entries(oldValue)) {
+          if (key === UP.toString()) {
+            rotatedOldValue[FRONT] = value;
+          } else if (key === BACK.toString()) {
+            rotatedOldValue[UP] = value;
+          } else if (key === DOWN.toString()) {
+            rotatedOldValue[BACK] = value;
+          } else if (key === FRONT.toString()) {
+            rotatedOldValue[DOWN] = value;
+          } else if (key === RIGHT.toString() || key === LEFT.toString()) {
+            rotatedOldValue[key] = value;
+          }
+        }
+
+        if (i + 2 === rotateUpIndices.length) {
+          newCubeColors[rotateUpIndices[0] + offset] = rotatedOldValue;
+        } else if (i + 2 >= rotateUpIndices.length) {
+          newCubeColors[rotateUpIndices[1] + offset] = rotatedOldValue;
+        } else {
+          newCubeColors[rotateUpIndices[i + 2] + offset] = rotatedOldValue;
+        }
+      }
+
+      return newCubeColors;
+    });
+  };
+
+  const rotateUp = () => {
+    const offset = selectedCube % 3;
+    setCubeColors((prev) => {
+      const newCubeColors = JSON.parse(JSON.stringify(prev));
+      for (let i = rotateUpIndices.length - 1; i >= 0; i--) {
+        const index = rotateUpIndices[i] + offset;
+        const oldValue = JSON.parse(JSON.stringify(prev[index]));
+        const rotatedOldValue: any = {};
+        for (const [key, value] of Object.entries(oldValue)) {
+          if (key === FRONT.toString()) {
+            rotatedOldValue[UP] = value;
+          } else if (key === UP.toString()) {
+            rotatedOldValue[BACK] = value;
+          } else if (key === BACK.toString()) {
+            rotatedOldValue[DOWN] = value;
+          } else if (key === DOWN.toString()) {
+            rotatedOldValue[FRONT] = value;
+          } else if (key === RIGHT.toString() || key === LEFT.toString()) {
+            rotatedOldValue[key] = value;
+          }
+        }
+
+        if (i === 1) {
+          newCubeColors[rotateUpIndices[rotateUpIndices.length - 1] + offset] =
+            rotatedOldValue;
+        } else if (i === 0) {
+          newCubeColors[rotateUpIndices[rotateUpIndices.length - 2] + offset] =
+            rotatedOldValue;
+        } else {
+          newCubeColors[rotateUpIndices[i - 2] + offset] = rotatedOldValue;
+        }
+      }
+
+      return newCubeColors;
+    });
+  };
+
   return (
     <div>
       <div style={{ marginBottom: 40 }}>
@@ -124,11 +203,28 @@ export function Cube() {
 
           <CenterCube ref={meshRef}>
             {cubes.map((cubeIndex) => {
-              return <OuterCube key={cubeIndex} cubeIndex={cubeIndex} />;
+              return (
+                <OuterCube
+                  key={cubeIndex}
+                  cubeIndex={cubeIndex}
+                  cubeColors={cubeColors}
+                />
+              );
             })}
           </CenterCube>
         </Canvas>
-        <span style={{ width: 40 }}>{selectedCube}</span>
+
+        <div style={{ display: "flex", flexDirection: "column", width: 150 }}>
+          {selectedCube !== -1 && (
+            <>
+              <button onClick={() => rotateUp()}> Rotate up</button>
+              <button onClick={() => rotateDown()}> Rotate down</button>
+              <button> Rotate Left</button>
+              <button> Rotate Right</button>
+              <span>{selectedCube}</span>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
