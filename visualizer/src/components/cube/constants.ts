@@ -42,3 +42,9 @@ export const initialCubeColors = [
 ];
 
 export const rotateVerticalIndices = [0, 3, 6, 15, 24, 21, 18, 9];
+
+export const rotateHorisontalIndices = [
+  [18, 19, 20, 11, 2, 1, 0, 9], // should 10 trigger this one?
+  [21, 22, 23, 14, 5, 4, 3, 12],
+  [24, 25, 26, 17, 8, 7, 6, 15], // should 16 trigger this one?
+];

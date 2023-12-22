@@ -1,8 +1,18 @@
 import { ReactNode, forwardRef, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Mesh } from "three";
-import { colorNumbers, initialCubeColors, rotationScale } from "./constants";
-import { calcRotationDown, calcRotationUp } from "./rotations";
+import {
+  colorNumbers,
+  initialCubeColors,
+  rotateHorisontalIndices,
+  rotationScale,
+} from "./constants";
+import {
+  calcRotationDown,
+  calcRotationLeft,
+  calcRotationRight,
+  calcRotationUp,
+} from "./rotations";
 
 const CenterCube = forwardRef<Mesh, { children: ReactNode }>(
   ({ children }, meshRef) => {
@@ -76,6 +86,22 @@ export function Cube() {
     setCubeColors((prev) => calcRotationUp(offset, prev));
   };
 
+  const rotateRight = () => {
+    const rotationIndicies =
+      rotateHorisontalIndices.find((indicies) =>
+        indicies.find((index) => index === selectedCube)
+      ) ?? [];
+    setCubeColors((prev) => calcRotationRight(rotationIndicies, prev));
+  };
+
+  const rotateLeft = () => {
+    const rotationIndicies =
+      rotateHorisontalIndices.find((indicies) =>
+        indicies.find((index) => index === selectedCube)
+      ) ?? [];
+    setCubeColors((prev) => calcRotationLeft(rotationIndicies, prev));
+  };
+
   return (
     <div>
       <div style={{ marginBottom: 40 }}>
@@ -112,10 +138,10 @@ export function Cube() {
         <div style={{ display: "flex", flexDirection: "column", width: 150 }}>
           {selectedCube !== -1 && (
             <>
-              <button onClick={() => rotateUp()}> Rotate up</button>
-              <button onClick={() => rotateDown()}> Rotate down</button>
-              <button> Rotate Left</button>
-              <button> Rotate Right</button>
+              <button onClick={rotateUp}>Rotate up</button>
+              <button onClick={rotateDown}>Rotate down</button>
+              <button onClick={rotateLeft}>Rotate Left</button>
+              <button onClick={rotateRight}>Rotate Right</button>
               <span>{selectedCube}</span>
             </>
           )}
