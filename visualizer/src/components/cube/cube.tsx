@@ -23,7 +23,7 @@ const CenterCube = forwardRef<Mesh, { children: ReactNode }>(
       <mesh
         position={[0, 0, 0]}
         ref={meshRef}
-        rotation={[rotationScale, rotationScale, 0]}
+        rotation={[rotationScale * 2, rotationScale * 2, 0]}
         scale={2}
       >
         <boxGeometry args={[0.5, 0.5, 0.5]} />

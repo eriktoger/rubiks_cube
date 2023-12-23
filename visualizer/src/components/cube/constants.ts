@@ -24,7 +24,7 @@ export const initialCubeColors = [
   { [DOWN]: "orange" },
   { [DOWN]: "orange", [RIGHT]: "green" },
   { [LEFT]: "blue" },
-  {} /*CenterCube*/,
+  {} /*CenterCube index 13*/,
   { [RIGHT]: "green" },
   { [LEFT]: "blue", [UP]: "red" },
   { [UP]: "red" },
@@ -51,6 +51,6 @@ export const rotateYIndices = [
 
 export const rotateZIndices = [
   [18, 19, 20, 23, 26, 25, 24, 21], // should 22 trigger this one?
-  [15, 16, 17, 14, 11, 10, 9, 12],
-  [0, 3, 6, 7, 8, 7, 5, 2, 1],
+  [12, 9, 10, 11, 14, 17, 16, 15],
+  [1, 2, 5, 8, 7, 6, 3, 0], // [0, 3, 6, 7, 8, 5, 2, 1]
 ];
