@@ -4,14 +4,17 @@ import { Mesh } from "three";
 import {
   colorNumbers,
   initialCubeColors,
-  rotateHorisontalIndices,
+  rotateYIndices,
+  rotateZIndices,
   rotationScale,
 } from "./constants";
 import {
   calcRotationMinusX,
   calcRotationMinusY,
+  calcRotationMinusZ,
   calcRotationPlusX,
   calcRotationPlusY,
+  calcRotationPlusZ,
 } from "./rotations";
 
 const CenterCube = forwardRef<Mesh, { children: ReactNode }>(
@@ -87,7 +90,7 @@ export function Cube() {
 
   const rotatePlusY = () => {
     const rotationIndicies =
-      rotateHorisontalIndices.find((indicies) =>
+      rotateYIndices.find((indicies) =>
         indicies.find((index) => index === selectedCube)
       ) ?? [];
     setCubeColors((prev) => calcRotationPlusY(rotationIndicies, prev));
@@ -95,10 +98,26 @@ export function Cube() {
 
   const rotateMinusY = () => {
     const rotationIndicies =
-      rotateHorisontalIndices.find((indicies) =>
+      rotateYIndices.find((indicies) =>
         indicies.find((index) => index === selectedCube)
       ) ?? [];
     setCubeColors((prev) => calcRotationMinusY(rotationIndicies, prev));
+  };
+
+  const rotatePlusZ = () => {
+    const rotationIndicies =
+      rotateZIndices.find((indicies) =>
+        indicies.find((index) => index === selectedCube)
+      ) ?? [];
+    setCubeColors((prev) => calcRotationPlusZ(rotationIndicies, prev));
+  };
+
+  const rotateMinusZ = () => {
+    const rotationIndicies =
+      rotateZIndices.find((indicies) =>
+        indicies.find((index) => index === selectedCube)
+      ) ?? [];
+    setCubeColors((prev) => calcRotationMinusZ(rotationIndicies, prev));
   };
 
   return (
@@ -143,6 +162,8 @@ export function Cube() {
               <button onClick={rotatePlusX}>Rotate + X</button>
               <button onClick={rotateMinusY}>Rotate - Y</button>
               <button onClick={rotatePlusY}>Rotate + Y</button>
+              <button onClick={rotateMinusZ}>Rotate - Z</button>
+              <button onClick={rotatePlusZ}>Rotate + Z</button>
               <span>{selectedCube}</span>
             </>
           )}

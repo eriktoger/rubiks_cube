@@ -41,10 +41,16 @@ export const initialCubeColors = [
   { [RIGHT]: "green", [UP]: "red", [FRONT]: "white" },
 ];
 
-export const rotateVerticalIndices = [0, 3, 6, 15, 24, 21, 18, 9];
+export const rotateXIndices = [0, 3, 6, 15, 24, 21, 18, 9];
 
-export const rotateHorisontalIndices = [
+export const rotateYIndices = [
   [18, 19, 20, 11, 2, 1, 0, 9], // should 10 trigger this one?
   [21, 22, 23, 14, 5, 4, 3, 12],
   [24, 25, 26, 17, 8, 7, 6, 15], // should 16 trigger this one?
+];
+
+export const rotateZIndices = [
+  [18, 19, 20, 23, 26, 25, 24, 21], // should 22 trigger this one?
+  [15, 16, 17, 14, 11, 10, 9, 12],
+  [0, 3, 6, 7, 8, 7, 5, 2, 1],
 ];
