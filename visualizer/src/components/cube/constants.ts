@@ -52,5 +52,5 @@ export const rotateYIndices = [
 export const rotateZIndices = [
   [18, 19, 20, 23, 26, 25, 24, 21], // should 22 trigger this one?
   [12, 9, 10, 11, 14, 17, 16, 15],
-  [1, 2, 5, 8, 7, 6, 3, 0], // [0, 3, 6, 7, 8, 5, 2, 1]
+  [1, 2, 5, 8, 7, 6, 3, 0], // should 4 trigger this one?
 ];
