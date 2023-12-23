@@ -2,6 +2,7 @@ import { ReactNode, forwardRef, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Mesh } from "three";
 import {
+  CubeColor,
   colorNumbers,
   initialCubeColors,
   rotateYIndices,
@@ -60,7 +61,7 @@ export function Cube() {
     cubeColors,
   }: {
     cubeIndex: number;
-    cubeColors: any;
+    cubeColors: CubeColor[];
   }) => {
     const x = (cubeIndex % 3) - 1;
     const y = Math.floor((cubeIndex % 9) / 3) - 1;

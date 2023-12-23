@@ -8,8 +8,28 @@ export const FRONT = 4;
 export const BACK = 5;
 
 export const colorNumbers = [RIGHT, LEFT, UP, DOWN, FRONT, BACK] as const;
+export type ColorNumber = (typeof colorNumbers)[number];
 
-export const initialCubeColors = [
+const yellow = "yellow";
+const blue = "blue";
+const orange = "orange";
+const white = "white";
+const red = "red";
+const green = "green";
+
+const colors = [yellow, blue, orange, white, red, green] as const;
+type Color = (typeof colors)[number];
+
+export type CubeColor = {
+  [RIGHT]?: Color;
+  [LEFT]?: Color;
+  [UP]?: Color;
+  [DOWN]?: Color;
+  [FRONT]?: Color;
+  [BACK]?: Color;
+};
+
+export const initialCubeColors: CubeColor[] = [
   { [BACK]: "yellow", [LEFT]: "blue", [DOWN]: "orange" },
   { [BACK]: "yellow", [DOWN]: "orange" },
   { [BACK]: "yellow", [RIGHT]: "green", [DOWN]: "orange" },

@@ -1,5 +1,7 @@
 import {
   BACK,
+  ColorNumber,
+  CubeColor,
   DOWN,
   FRONT,
   LEFT,
@@ -8,15 +10,12 @@ import {
   rotateXIndices,
 } from "./constants";
 
-//TODO: Add the third rotation. Add it also to the center cube.
-
-export const calcRotationPlusX = (offset: number, prev: any) => {
+export const calcRotationPlusX = (offset: number, prev: CubeColor[]) => {
   const newCubeColors = JSON.parse(JSON.stringify(prev));
   for (let i = rotateXIndices.length - 1; i >= 0; i--) {
     const index = rotateXIndices[i] + offset;
-    const oldValue = JSON.parse(JSON.stringify(prev[index]));
-    const rotatedOldValue: any = {};
-    for (const [key, value] of Object.entries(oldValue)) {
+    const rotatedOldValue: CubeColor = {};
+    for (const [key, value] of Object.entries(prev[index])) {
       if (key === FRONT.toString()) {
         rotatedOldValue[UP] = value;
       } else if (key === UP.toString()) {
@@ -26,7 +25,8 @@ export const calcRotationPlusX = (offset: number, prev: any) => {
       } else if (key === DOWN.toString()) {
         rotatedOldValue[FRONT] = value;
       } else if (key === RIGHT.toString() || key === LEFT.toString()) {
-        rotatedOldValue[key] = value;
+        const keyInt = parseInt(key) as ColorNumber;
+        rotatedOldValue[keyInt] = value;
       }
     }
 
@@ -43,13 +43,12 @@ export const calcRotationPlusX = (offset: number, prev: any) => {
   return newCubeColors;
 };
 
-export const calcRotationMinusX = (offset: number, prev: any) => {
+export const calcRotationMinusX = (offset: number, prev: CubeColor[]) => {
   const newCubeColors = JSON.parse(JSON.stringify(prev));
   for (let i = 0; i < rotateXIndices.length; i++) {
     const index = rotateXIndices[i] + offset;
-    const oldValue = JSON.parse(JSON.stringify(prev[index]));
-    const rotatedOldValue: any = {};
-    for (const [key, value] of Object.entries(oldValue)) {
+    const rotatedOldValue: CubeColor = {};
+    for (const [key, value] of Object.entries(prev[index])) {
       if (key === UP.toString()) {
         rotatedOldValue[FRONT] = value;
       } else if (key === BACK.toString()) {
@@ -59,7 +58,8 @@ export const calcRotationMinusX = (offset: number, prev: any) => {
       } else if (key === FRONT.toString()) {
         rotatedOldValue[DOWN] = value;
       } else if (key === RIGHT.toString() || key === LEFT.toString()) {
-        rotatedOldValue[key] = value;
+        const keyInt = parseInt(key) as ColorNumber;
+        rotatedOldValue[keyInt] = value;
       }
     }
 
@@ -75,13 +75,12 @@ export const calcRotationMinusX = (offset: number, prev: any) => {
   return newCubeColors;
 };
 
-export const calcRotationPlusY = (indices: number[], prev: any) => {
+export const calcRotationPlusY = (indices: number[], prev: CubeColor[]) => {
   const newCubeColors = JSON.parse(JSON.stringify(prev));
   for (let i = 0; i < indices.length; i++) {
     const index = indices[i];
-    const oldValue = JSON.parse(JSON.stringify(prev[index]));
-    const rotatedOldValue: any = {};
-    for (const [key, value] of Object.entries(oldValue)) {
+    const rotatedOldValue: CubeColor = {};
+    for (const [key, value] of Object.entries(prev[index])) {
       if (key === FRONT.toString()) {
         rotatedOldValue[RIGHT] = value;
       } else if (key === RIGHT.toString()) {
@@ -91,7 +90,8 @@ export const calcRotationPlusY = (indices: number[], prev: any) => {
       } else if (key === LEFT.toString()) {
         rotatedOldValue[FRONT] = value;
       } else if (key === UP.toString() || key === DOWN.toString()) {
-        rotatedOldValue[key] = value;
+        const keyInt = parseInt(key) as ColorNumber;
+        rotatedOldValue[keyInt] = value;
       }
     }
 
@@ -107,13 +107,12 @@ export const calcRotationPlusY = (indices: number[], prev: any) => {
   return newCubeColors;
 };
 
-export const calcRotationMinusY = (indices: number[], prev: any) => {
+export const calcRotationMinusY = (indices: number[], prev: CubeColor[]) => {
   const newCubeColors = JSON.parse(JSON.stringify(prev));
   for (let i = indices.length - 1; i >= 0; i--) {
     const index = indices[i];
-    const oldValue = JSON.parse(JSON.stringify(prev[index]));
-    const rotatedOldValue: any = {};
-    for (const [key, value] of Object.entries(oldValue)) {
+    const rotatedOldValue: CubeColor = {};
+    for (const [key, value] of Object.entries(prev[index])) {
       if (key === FRONT.toString()) {
         rotatedOldValue[LEFT] = value;
       } else if (key === LEFT.toString()) {
@@ -123,7 +122,8 @@ export const calcRotationMinusY = (indices: number[], prev: any) => {
       } else if (key === RIGHT.toString()) {
         rotatedOldValue[FRONT] = value;
       } else if (key === UP.toString() || key === DOWN.toString()) {
-        rotatedOldValue[key] = value;
+        const keyInt = parseInt(key) as ColorNumber;
+        rotatedOldValue[keyInt] = value;
       }
     }
 
@@ -139,13 +139,12 @@ export const calcRotationMinusY = (indices: number[], prev: any) => {
   return newCubeColors;
 };
 
-export const calcRotationPlusZ = (indices: number[], prev: any) => {
+export const calcRotationPlusZ = (indices: number[], prev: CubeColor[]) => {
   const newCubeColors = JSON.parse(JSON.stringify(prev));
   for (let i = 0; i < indices.length; i++) {
     const index = indices[i];
-    const oldValue = JSON.parse(JSON.stringify(prev[index]));
-    const rotatedOldValue: any = {};
-    for (const [key, value] of Object.entries(oldValue)) {
+    const rotatedOldValue: CubeColor = {};
+    for (const [key, value] of Object.entries(prev[index])) {
       if (key === UP.toString()) {
         rotatedOldValue[LEFT] = value;
       } else if (key === RIGHT.toString()) {
@@ -155,7 +154,8 @@ export const calcRotationPlusZ = (indices: number[], prev: any) => {
       } else if (key === LEFT.toString()) {
         rotatedOldValue[DOWN] = value;
       } else if (key === FRONT.toString() || key === BACK.toString()) {
-        rotatedOldValue[key] = value;
+        const keyInt = parseInt(key) as ColorNumber;
+        rotatedOldValue[keyInt] = value;
       }
     }
 
@@ -171,13 +171,12 @@ export const calcRotationPlusZ = (indices: number[], prev: any) => {
   return newCubeColors;
 };
 
-export const calcRotationMinusZ = (indices: number[], prev: any) => {
+export const calcRotationMinusZ = (indices: number[], prev: CubeColor[]) => {
   const newCubeColors = JSON.parse(JSON.stringify(prev));
   for (let i = 0; i < indices.length; i++) {
     const index = indices[i];
-    const oldValue = JSON.parse(JSON.stringify(prev[index]));
-    const rotatedOldValue: any = {};
-    for (const [key, value] of Object.entries(oldValue)) {
+    const rotatedOldValue: CubeColor = {};
+    for (const [key, value] of Object.entries(prev[index])) {
       if (key === LEFT.toString()) {
         rotatedOldValue[UP] = value;
       } else if (key === UP.toString()) {
@@ -187,7 +186,8 @@ export const calcRotationMinusZ = (indices: number[], prev: any) => {
       } else if (key === DOWN.toString()) {
         rotatedOldValue[LEFT] = value;
       } else if (key === FRONT.toString() || key === BACK.toString()) {
-        rotatedOldValue[key] = value;
+        const keyInt = parseInt(key) as ColorNumber;
+        rotatedOldValue[keyInt] = value;
       }
     }
 
