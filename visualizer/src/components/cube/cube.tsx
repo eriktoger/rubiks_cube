@@ -34,10 +34,18 @@ const CenterCube = forwardRef<Mesh, { children: ReactNode }>(
   }
 );
 
+const sleep = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
 export function Cube() {
   const meshRef = useRef<Mesh>(null);
   const [cubeColors, setCubeColors] = useState(initialCubeColors);
   const [selectedCube, setSelectedCube] = useState(-1);
+  const [reverseMoves, setReverseMoves] = useState<
+    { cubeIndex: number; move: number }[]
+  >([]);
+  const [isMoving, setIsMoving] = useState(false);
 
   const rotateCube = (delta: number, axis: "x" | "y" | "z") => {
     if (!meshRef?.current) {
@@ -86,11 +94,13 @@ export function Cube() {
   const rotateMinusX = (cubeIndex: number) => {
     const offset = cubeIndex % 3;
     setCubeColors((prev) => calcRotationMinusX(offset, prev));
+    setReverseMoves((prev) => [...prev, { move: 1, cubeIndex }]);
   };
 
   const rotatePlusX = (cubeIndex: number) => {
     const offset = cubeIndex % 3;
     setCubeColors((prev) => calcRotationPlusX(offset, prev));
+    setReverseMoves((prev) => [...prev, { move: 0, cubeIndex }]);
   };
 
   const rotatePlusY = (cubeIndex: number) => {
@@ -99,6 +109,7 @@ export function Cube() {
         indicies.find((index) => index === cubeIndex)
       ) ?? [];
     setCubeColors((prev) => calcRotationPlusY(rotationIndicies, prev));
+    setReverseMoves((prev) => [...prev, { move: 2, cubeIndex }]);
   };
 
   const rotateMinusY = (cubeIndex: number) => {
@@ -107,6 +118,7 @@ export function Cube() {
         indicies.find((index) => index === cubeIndex)
       ) ?? [];
     setCubeColors((prev) => calcRotationMinusY(rotationIndicies, prev));
+    setReverseMoves((prev) => [...prev, { move: 3, cubeIndex }]);
   };
 
   const rotatePlusZ = (cubeIndex: number) => {
@@ -115,6 +127,7 @@ export function Cube() {
         indicies.find((index) => index === cubeIndex)
       ) ?? [];
     setCubeColors((prev) => calcRotationPlusZ(rotationIndicies, prev));
+    setReverseMoves((prev) => [...prev, { move: 4, cubeIndex }]);
   };
 
   const rotateMinusZ = (cubeIndex: number) => {
@@ -123,13 +136,14 @@ export function Cube() {
         indicies.find((index) => index === cubeIndex)
       ) ?? [];
     setCubeColors((prev) => calcRotationMinusZ(rotationIndicies, prev));
+    setReverseMoves((prev) => [...prev, { move: 5, cubeIndex }]);
   };
 
-  const shuffle = () => {
+  const shuffle = async () => {
     const nrOfShuffles = 10;
     const numberOfOperations = 6;
     const numberOfCubes = 27;
-    const reverseOperations = [];
+    setIsMoving(true);
     for (let i = 0; i < nrOfShuffles; i++) {
       const operation = Math.floor(Math.random() * numberOfOperations);
       const cubeIndex = Math.floor(Math.random() * numberOfCubes);
@@ -162,7 +176,44 @@ export function Cube() {
           break;
         }
       }
+      await sleep(300);
     }
+    setIsMoving(false);
+  };
+
+  const solve = async () => {
+    setIsMoving(true);
+    for (const reverseMove of reverseMoves.reverse()) {
+      const { move, cubeIndex } = reverseMove;
+      switch (move) {
+        case 0: {
+          rotateMinusX(cubeIndex);
+          break;
+        }
+        case 1: {
+          rotatePlusX(cubeIndex);
+          break;
+        }
+        case 2: {
+          rotateMinusY(cubeIndex);
+          break;
+        }
+        case 3: {
+          rotatePlusY(cubeIndex);
+          break;
+        }
+        case 4: {
+          rotateMinusZ(cubeIndex);
+          break;
+        }
+        case 5: {
+          rotatePlusZ(cubeIndex);
+          break;
+        }
+      }
+      await sleep(300);
+    }
+    setIsMoving(false);
   };
 
   return (
@@ -221,7 +272,7 @@ export function Cube() {
           >
             <div style={{ display: "flex", flexDirection: "column" }}>
               <button onClick={() => rotateMinusX(selectedCube)}>- X </button>
-              <button onClick={() => rotatePlusX}>+ X</button>
+              <button onClick={() => rotatePlusX(selectedCube)}>+ X</button>
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <button onClick={() => rotateMinusY(selectedCube)}>- Y</button>
@@ -235,7 +286,12 @@ export function Cube() {
         )}
         {selectedCube === -1 && <span>Click the cube to enable rotation</span>}
       </div>
-      <button onClick={shuffle}>Shuffle!!!</button>
+      <button onClick={shuffle} disabled={isMoving}>
+        Shuffle!!!
+      </button>
+      <button onClick={solve} disabled={isMoving}>
+        Solve!!!
+      </button>
       <span>{selectedCube}</span>
     </div>
   );
