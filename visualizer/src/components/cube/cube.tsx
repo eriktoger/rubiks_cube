@@ -214,6 +214,7 @@ export function Cube() {
       await sleep(300);
     }
     setIsMoving(false);
+    setReverseMoves([]);
   };
 
   return (
