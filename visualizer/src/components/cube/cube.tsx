@@ -20,7 +20,12 @@ import {
 const CenterCube = forwardRef<Mesh, { children: ReactNode }>(
   ({ children }, meshRef) => {
     return (
-      <mesh position={[0, 0, 0]} ref={meshRef} rotation={[0.333, 0.333, 0]}>
+      <mesh
+        position={[0, 0, 0]}
+        ref={meshRef}
+        rotation={[rotationScale, rotationScale, 0]}
+        scale={2}
+      >
         <boxGeometry args={[0.5, 0.5, 0.5]} />
         <meshBasicMaterial color={"gray"} />
         {children}
@@ -121,22 +126,31 @@ export function Cube() {
   };
 
   return (
-    <div>
-      <div style={{ marginBottom: 40 }}>
-        <button onClick={() => rotateCube(-1, "x")}>- X </button>
-        <button onClick={() => rotateCube(1, "x")}>+ X</button>
-        <button onClick={() => rotateCube(-1, "y")}>- Y</button>
-        <button onClick={() => rotateCube(1, "y")}>+ Y</button>
-        <button onClick={() => rotateCube(-1, "z")}>- Z</button>
-        <button onClick={() => rotateCube(1, "z")}>+ Z</button>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <h2>Rotate the cube</h2>
+      <div
+        style={{ display: "flex", marginBottom: 40, justifyContent: "center" }}
+      >
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <button onClick={() => rotateCube(-1, "x")}>- X </button>
+          <button onClick={() => rotateCube(1, "x")}>+ X</button>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <button onClick={() => rotateCube(-1, "y")}>- Y</button>
+          <button onClick={() => rotateCube(1, "y")}>+ Y</button>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <button onClick={() => rotateCube(-1, "z")}>- Z</button>
+          <button onClick={() => rotateCube(1, "z")}>+ Z</button>
+        </div>
       </div>
       <div
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          height: 500,
-          width: 500,
+          width: 350,
+          height: 350,
         }}
       >
         <Canvas>
@@ -154,21 +168,34 @@ export function Cube() {
             })}
           </CenterCube>
         </Canvas>
-
-        <div style={{ display: "flex", flexDirection: "column", width: 200 }}>
-          {selectedCube !== -1 && (
-            <>
-              <button onClick={rotateMinusX}>Rotate - X</button>
-              <button onClick={rotatePlusX}>Rotate + X</button>
-              <button onClick={rotateMinusY}>Rotate - Y</button>
-              <button onClick={rotatePlusY}>Rotate + Y</button>
-              <button onClick={rotateMinusZ}>Rotate - Z</button>
-              <button onClick={rotatePlusZ}>Rotate + Z</button>
-              <span>{selectedCube}</span>
-            </>
-          )}
-        </div>
       </div>
+      <h2>Make a move</h2>
+      <div style={{ height: 100 }}>
+        {selectedCube !== -1 && (
+          <div
+            style={{
+              display: "flex",
+              marginBottom: 40,
+              justifyContent: "center",
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <button onClick={rotateMinusX}>- X </button>
+              <button onClick={rotatePlusX}>+ X</button>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <button onClick={rotateMinusY}>- Y</button>
+              <button onClick={rotatePlusY}>+ Y</button>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <button onClick={rotateMinusZ}>- Z</button>
+              <button onClick={rotatePlusZ}>+ Z</button>
+            </div>
+          </div>
+        )}
+        {selectedCube === -1 && <span>Click the cube to enable rotation</span>}
+      </div>
+      <span>{selectedCube}</span>
     </div>
   );
 }
