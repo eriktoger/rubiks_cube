@@ -20,7 +20,7 @@ import {
 const CenterCube = forwardRef<Mesh, { children: ReactNode }>(
   ({ children }, meshRef) => {
     return (
-      <mesh position={[0, 0, 0]} ref={meshRef}>
+      <mesh position={[0, 0, 0]} ref={meshRef} rotation={[0.333, 0.333, 0]}>
         <boxGeometry args={[0.5, 0.5, 0.5]} />
         <meshBasicMaterial color={"gray"} />
         {children}
