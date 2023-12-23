@@ -83,46 +83,86 @@ export function Cube() {
   };
   const cubes = Array.from(Array(27).keys());
 
-  const rotateMinusX = () => {
-    const offset = selectedCube % 3;
+  const rotateMinusX = (cubeIndex: number) => {
+    const offset = cubeIndex % 3;
     setCubeColors((prev) => calcRotationMinusX(offset, prev));
   };
 
-  const rotatePlusX = () => {
-    const offset = selectedCube % 3;
+  const rotatePlusX = (cubeIndex: number) => {
+    const offset = cubeIndex % 3;
     setCubeColors((prev) => calcRotationPlusX(offset, prev));
   };
 
-  const rotatePlusY = () => {
+  const rotatePlusY = (cubeIndex: number) => {
     const rotationIndicies =
       rotateYIndices.find((indicies) =>
-        indicies.find((index) => index === selectedCube)
+        indicies.find((index) => index === cubeIndex)
       ) ?? [];
     setCubeColors((prev) => calcRotationPlusY(rotationIndicies, prev));
   };
 
-  const rotateMinusY = () => {
+  const rotateMinusY = (cubeIndex: number) => {
     const rotationIndicies =
       rotateYIndices.find((indicies) =>
-        indicies.find((index) => index === selectedCube)
+        indicies.find((index) => index === cubeIndex)
       ) ?? [];
     setCubeColors((prev) => calcRotationMinusY(rotationIndicies, prev));
   };
 
-  const rotatePlusZ = () => {
+  const rotatePlusZ = (cubeIndex: number) => {
     const rotationIndicies =
       rotateZIndices.find((indicies) =>
-        indicies.find((index) => index === selectedCube)
+        indicies.find((index) => index === cubeIndex)
       ) ?? [];
     setCubeColors((prev) => calcRotationPlusZ(rotationIndicies, prev));
   };
 
-  const rotateMinusZ = () => {
+  const rotateMinusZ = (cubeIndex: number) => {
     const rotationIndicies =
       rotateZIndices.find((indicies) =>
-        indicies.find((index) => index === selectedCube)
+        indicies.find((index) => index === cubeIndex)
       ) ?? [];
     setCubeColors((prev) => calcRotationMinusZ(rotationIndicies, prev));
+  };
+
+  const shuffle = () => {
+    const nrOfShuffles = 10;
+    const numberOfOperations = 6;
+    const numberOfCubes = 27;
+    const reverseOperations = [];
+    for (let i = 0; i < nrOfShuffles; i++) {
+      const operation = Math.floor(Math.random() * numberOfOperations);
+      const cubeIndex = Math.floor(Math.random() * numberOfCubes);
+      if (cubeIndex === 13) {
+        continue;
+      }
+      switch (operation) {
+        case 0: {
+          rotateMinusX(cubeIndex);
+          break;
+        }
+        case 1: {
+          rotatePlusX(cubeIndex);
+          break;
+        }
+        case 2: {
+          rotateMinusY(cubeIndex);
+          break;
+        }
+        case 3: {
+          rotatePlusY(cubeIndex);
+          break;
+        }
+        case 4: {
+          rotateMinusZ(cubeIndex);
+          break;
+        }
+        case 5: {
+          rotatePlusZ(cubeIndex);
+          break;
+        }
+      }
+    }
   };
 
   return (
@@ -180,21 +220,22 @@ export function Cube() {
             }}
           >
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <button onClick={rotateMinusX}>- X </button>
-              <button onClick={rotatePlusX}>+ X</button>
+              <button onClick={() => rotateMinusX(selectedCube)}>- X </button>
+              <button onClick={() => rotatePlusX}>+ X</button>
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <button onClick={rotateMinusY}>- Y</button>
-              <button onClick={rotatePlusY}>+ Y</button>
+              <button onClick={() => rotateMinusY(selectedCube)}>- Y</button>
+              <button onClick={() => rotatePlusY(selectedCube)}>+ Y</button>
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <button onClick={rotateMinusZ}>- Z</button>
-              <button onClick={rotatePlusZ}>+ Z</button>
+              <button onClick={() => rotateMinusZ(selectedCube)}>- Z</button>
+              <button onClick={() => rotatePlusZ(selectedCube)}>+ Z</button>
             </div>
           </div>
         )}
         {selectedCube === -1 && <span>Click the cube to enable rotation</span>}
       </div>
+      <button onClick={shuffle}>Shuffle!!!</button>
       <span>{selectedCube}</span>
     </div>
   );
