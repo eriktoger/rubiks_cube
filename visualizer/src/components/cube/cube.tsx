@@ -1,4 +1,4 @@
-import { ReactNode, forwardRef, useRef, useState } from "react";
+import { ReactNode, forwardRef, useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Mesh } from "three";
 import {
@@ -17,6 +17,8 @@ import {
   calcRotationPlusY,
   calcRotationPlusZ,
 } from "./rotations";
+
+import { greet } from "../../wasm/solver";
 
 const CenterCube = forwardRef<Mesh, { children: ReactNode }>(
   ({ children }, meshRef) => {
@@ -217,6 +219,10 @@ export function Cube() {
     setIsMoving(false);
     setReverseMoves([]);
   };
+
+  useEffect(() => {
+    console.log(greet("From Rust"));
+  }, []);
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>

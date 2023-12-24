@@ -4,8 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "dev": "npm run build:solver && vite",
+    "build:visualizer": "tsc && vite build",
+    "build:solver": "cd ../solver && cargo build --target wasm32-unknown-unknown && wasm-bindgen target/wasm32-unknown-unknown/debug/solver.wasm --out-dir ../visualizer/src/wasm",
+    "build": "npm run build:solver && npm run build:visualizer",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -14,7 +16,8 @@
     "@types/three": "^0.159.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "three": "^0.159.0"
+    "three": "^0.159.0",
+    "vite-plugin-wasm": "^3.3.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
