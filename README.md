@@ -6,7 +6,7 @@
 
 ### Solver
 
-The different solving techniques will be written in Rust.
+The rotation logic is written in rust. A true solver is yet to be implemented.
 
 ### Visualizer
 
