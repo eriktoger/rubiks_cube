@@ -8,4 +8,4 @@ export const rotateCubes = (
     axis: "X" | "Y" | "Z";
     direction: "Forwards" | "Backwards";
   }
-) => JSON.parse(rotate_cube_colors(prev, [rotation])).data;
+) => rotate_cube_colors(prev, [rotation]).data;

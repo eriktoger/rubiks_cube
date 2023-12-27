@@ -6,7 +6,7 @@ import { rotateCubes } from "./rotateCubes";
 
 export const useRotations = () => {
   const [cubeColors, setCubeColors] = useState<CubeColor[]>(
-    JSON.parse(get_initial_cube_colors())
+    get_initial_cube_colors().data
   );
   const [reverseMoves, setReverseMoves] = useState<
     { cubeIndex: number; move: number }[]
